@@ -1508,29 +1508,32 @@ function scorm_get_toc_get_parent_child(&$result) {
             $final[$level][$sco->identifier] = $sco;
             $prevparent = $sco->identifier;
             unset($result[$sco->id]);
-        } else {
-            if ($sco->parent == $prevparent) {
-                $final[$level][$sco->identifier] = $sco;
-                $prevparent = $sco->identifier;
-                unset($result[$sco->id]);
-            } else {
-                if (!empty($final[$level])) {
-                    $found = false;
-                    foreach ($final[$level] as $fin) {
-                        if ($sco->parent == $fin->identifier) {
-                            $found = true;
-                        }
-                    }
+            break;
+        }
+    }
 
-                    if ($found) {
-                        $final[$level][$sco->identifier] = $sco;
-                        unset($result[$sco->id]);
-                        $found = false;
-                    } else {
-                        $level++;
-                        $final[$level][$sco->identifier] = $sco;
-                        unset($result[$sco->id]);
+    foreach ($result as $sco) {
+        if ($sco->parent == $prevparent) {
+            $final[$level][$sco->identifier] = $sco;
+            $prevparent = $sco->identifier;
+            unset($result[$sco->id]);
+        } else {
+            if (!empty($final[$level])) {
+                $found = false;
+                foreach ($final[$level] as $fin) {
+                    if ($sco->parent == $fin->identifier) {
+                        $found = true;
                     }
+                }
+
+                if ($found) {
+                    $final[$level][$sco->identifier] = $sco;
+                    unset($result[$sco->id]);
+                    $found = false;
+                } else {
+                    $level++;
+                    $final[$level][$sco->identifier] = $sco;
+                    unset($result[$sco->id]);
                 }
             }
         }
